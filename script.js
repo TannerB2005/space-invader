@@ -21,21 +21,48 @@ const enemyController = new EnemyController(
 const player = new Player(canvas, 3, playerBulletController);
 
 let isGameOver = false;
+let didWin = false;
 
 function game() {
-    ctx.drawImage(background,0,0,canvas.width, canvas.height);
+    checkGameOver();
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    displayGameOver();
+    if (!isGameOver){
     enemyController.draw(ctx);
     player.draw(ctx);
     playerBulletController.draw(ctx);
     enemyBulletController.draw(ctx);
+    console.log(isGameOver);
+  }
 }
+
+function displayGameOver(){
+    if (isGameOver) {
+        let text = didWin ? "cool i guess" : "you suck";
+        let textOffset = didWin ? 5 : 3.75;
+
+        ctx.fillStyle = "white";
+        ctx.font = "70px Arial";
+        ctx.fillText(text, canvas.width / textOffset, canvas.height / 2);
+    }
+}
+
 
 function checkGameOver() {
     if(isGameOver) {
         return;
     }
 
-    if(enemyBulletController.collideWith(player)){
+    if (enemyBulletController.collideWith(player)){
+        isGameOver = true;
+    }
+
+    if (enemyController.collideWith(player)) {
+        isGameOver = true;
+    }
+
+    if (enemyController.enemyRows.length === 0) {
+        didWin = true;
         isGameOver = true;
     }
 }
